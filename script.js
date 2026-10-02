@@ -56,7 +56,7 @@ const root = document.getElementById('schedule');
 let selected = 'all';
 let displayedState;
 const astanaClock = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'Asia/Almaty', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  timeZone: 'Asia/Almaty', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
 });
 function toMinutes(time) {
   const [hour, minute] = time.split(':').map(Number);
@@ -70,8 +70,70 @@ function astanaState(date = new Date()) {
   const period = day < 0 ? null : Object.keys(periods).map(Number).find(number =>
     minutes >= toMinutes(periods[number][0]) && minutes < toMinutes(periods[number][1])
   ) ?? null;
-  return { day, period, key: `${day}:${period}` };
+  const seconds = minutes * 60 + Number(parts.second);
+  return { day, period, seconds, key: `${day}:${period}` };
 }
+function currentBreak(state) {
+  if (state.day < 0 || state.period !== null) return null;
+  const slots = days[state.day].lessons.flatMap(([name, first, last, room]) =>
+    Array.from({ length: last - first + 1 }, (_, index) => ({ number: first + index, name, room }))
+  );
+  for (let index = 1; index < slots.length; index += 1) {
+    const previous = slots[index - 1];
+    const next = slots[index];
+    const start = toMinutes(periods[previous.number][1]) * 60;
+    const end = toMinutes(periods[next.number][0]) * 60;
+    if (state.seconds >= start && state.seconds < end) {
+      return { key: `${state.day}:${next.number}`, remaining: end - state.seconds, duration: end - start, next };
+    }
+  }
+  return null;
+}
+const breakCard = document.getElementById('break-card');
+let visibleBreak = null;
+let dismissedBreak = null;
+let dismissedUrgent = false;
+function updateFloatingBounds() {
+  if (breakCard.hidden) return;
+  breakCard.style.setProperty('--float-x', `${Math.max(0, window.innerWidth - breakCard.offsetWidth - 24)}px`);
+  breakCard.style.setProperty('--float-y', `${Math.max(0, window.innerHeight - breakCard.offsetHeight - 24)}px`);
+}
+function updateBreak(state) {
+  const pause = currentBreak(state);
+  visibleBreak = pause;
+  const urgent = pause !== null && pause.remaining <= 60;
+  if (pause === null) {
+    dismissedBreak = null;
+    dismissedUrgent = false;
+  }
+  if (pause === null || (dismissedBreak === pause.key && (!urgent || dismissedUrgent))) {
+    breakCard.hidden = true;
+    return;
+  }
+  const opening = breakCard.hidden;
+  breakCard.hidden = false;
+  breakCard.classList.toggle('is-urgent', urgent);
+  const hue = pause.duration > 60 ? Math.max(0, Math.min(150, 150 * (pause.remaining - 60) / (pause.duration - 60))) : 0;
+  breakCard.style.setProperty('--break-hue', hue.toFixed(1));
+  const minutes = Math.floor(pause.remaining / 60).toString().padStart(2, '0');
+  const seconds = (pause.remaining % 60).toString().padStart(2, '0');
+  document.getElementById('break-clock').textContent = `${minutes}:${seconds}`;
+  const message = document.getElementById('break-message');
+  const text = urgent ? 'Пора занять место в классе' : 'Выдохни и улыбнись!';
+  if (message.textContent !== text) message.textContent = text;
+  document.getElementById('break-title').textContent = urgent ? 'Скоро звонок!' : 'Перемена!';
+  document.getElementById('break-next').textContent = `Дальше: ${pause.next.name}`;
+  document.getElementById('break-room').textContent = `${periods[pause.next.number][0]} · ${pause.next.room === 'Спортзал' ? pause.next.room : `Каб. ${pause.next.room}`}`;
+  document.getElementById('break-progress-fill').style.width = `${100 * (1 - pause.remaining / pause.duration)}%`;
+  if (opening || urgent) updateFloatingBounds();
+}
+document.getElementById('break-close').addEventListener('click', () => {
+  if (visibleBreak === null) return;
+  dismissedBreak = visibleBreak.key;
+  dismissedUrgent = visibleBreak.remaining <= 60;
+  breakCard.hidden = true;
+});
+window.addEventListener('resize', updateFloatingBounds);
 function render() {
   const { day: today, period: currentPeriod, key } = astanaState();
   displayedState = key;
@@ -110,10 +172,12 @@ document.querySelectorAll('.day-button').forEach(button => {
     render();
   });
 });
-render();
 function refreshCurrentLesson() {
-  if (astanaState().key !== displayedState) render();
+  const state = astanaState();
+  if (state.key !== displayedState) render();
+  updateBreak(state);
 }
+refreshCurrentLesson();
 setInterval(refreshCurrentLesson, 1000);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshCurrentLesson();

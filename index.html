@@ -7,8 +7,8 @@
   <meta name="description" content="Расписание уроков 5 К русского класса школы-лицея №72, Астана. Время занятий и кабинеты на всю неделю.">
   <title>5 К · Расписание уроков</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23090c14'/%3E%3Ctext x='12' y='48' font-size='45' fill='%23a2ffc6' font-family='sans-serif'%3E5%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./style.css?v=15">
-  <script src="./script.js?v=15" defer></script>
+  <link rel="stylesheet" href="./style.css?v=16">
+  <script src="./script.js?v=16" defer></script>
 </head>
 <body>
   <div class="aura" aria-hidden="true"></div>
@@ -41,5 +41,13 @@
     </section>
     <footer><span>5 К <span class="footer-slash">/</span> Школа-лицей №72</span><span>По расписанию от 05.09.2026</span><span class="developer-credit">Разработчик <b>Гаврилычев Артур</b></span></footer>
   </main>
+  <aside id="break-card" class="break-card" role="dialog" aria-modal="false" aria-labelledby="break-title" hidden>
+    <div class="break-header"><span class="break-mascot" aria-hidden="true">😎</span><strong id="break-title">Перемена!</strong><button id="break-close" class="break-close" type="button" aria-label="Скрыть окно до следующей перемены или напоминания">×</button></div>
+    <div class="break-clock-row"><span id="break-clock" class="break-clock" role="timer" aria-label="До следующего урока" aria-live="off">00:00</span><span class="break-clock-label">до урока</span></div>
+    <p id="break-message" class="break-message" role="status" aria-live="polite">Выдохни и улыбнись!</p>
+    <div id="break-next" class="break-next"></div>
+    <div id="break-room" class="break-room"></div>
+    <div class="break-progress" aria-hidden="true"><span id="break-progress-fill"></span></div>
+  </aside>
 </body>
 </html>
