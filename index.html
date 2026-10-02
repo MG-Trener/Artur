@@ -7,8 +7,8 @@
   <meta name="description" content="Расписание уроков 5 К русского класса школы-лицея №72, Астана. Время занятий и кабинеты на всю неделю.">
   <title>5 К · Расписание уроков</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23090c14'/%3E%3Ctext x='12' y='48' font-size='45' fill='%23a2ffc6' font-family='sans-serif'%3E5%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./style.css?v=5">
-  <script src="./script.js?v=5" defer></script>
+  <link rel="stylesheet" href="./style.css?v=6">
+  <script src="./script.js?v=6" defer></script>
 </head>
 <body>
   <div class="aura" aria-hidden="true"></div>
@@ -28,6 +28,14 @@
       <h2 id="schedule-title" class="sr-only">Расписание недели</h2>
       <nav class="day-nav" aria-label="Выбор дня"><button class="day-button active" data-day="all" aria-pressed="true">Вся неделя</button><button class="day-button" data-day="0" aria-pressed="false">Пн</button><button class="day-button" data-day="1" aria-pressed="false">Вт</button><button class="day-button" data-day="2" aria-pressed="false">Ср</button><button class="day-button" data-day="3" aria-pressed="false">Чт</button><button class="day-button" data-day="4" aria-pressed="false">Пт</button><span class="nav-note">Время Астаны</span></nav>
       <div id="schedule" class="week-grid"></div>
+      <div id="day-animation" class="day-animation" hidden aria-hidden="true">
+        <div class="orbit-scene">
+          <div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div>
+          <div class="orbit-core">✦</div>
+          <span class="orbit-symbol symbol-one">∑</span><span class="orbit-symbol symbol-two">Aa</span><span class="orbit-symbol symbol-three">✎</span><span class="orbit-symbol symbol-four">♫</span>
+          <div class="orbit-floor"></div>
+        </div>
+      </div>
       <noscript><p>Для просмотра расписания включите JavaScript в браузере.</p></noscript>
       <div class="schedule-caption"><span><span class="caption-line"></span> Сдвоенные уроки объединены в один блок</span><span>После уроков — время для себя <span aria-hidden="true">✦</span></span></div>
     </section>

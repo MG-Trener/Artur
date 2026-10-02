@@ -47,6 +47,7 @@ function astanaDay() {
 function render() {
   const today = astanaDay();
   root.classList.toggle('single-day', selected !== 'all');
+  document.getElementById('day-animation').hidden = selected === 'all';
   root.innerHTML = days.map((day, index) => {
     const count = day.lessons.reduce((total, lesson) => total + lesson[2] - lesson[1] + 1, 0);
     const last = day.lessons.at(-1);
