@@ -57,7 +57,7 @@ function render() {
         <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${first} урок` : `${first}–${end} уроки`}</span></div>
         <div class="lesson-time">${periods[first][0]} <span>—</span> ${periods[end][1]}</div>
         <h4>${name}</h4>
-        <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room === 'Спортзал' ? room : `Каб. ${room}`}${end > first ? '<span class="double-mark" title="Сдвоенный урок" aria-label="Сдвоенный урок">×2</span>' : ''}</div>
+        <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room === 'Спортзал' ? room : `Каб. ${room}`}${end > first ? '<span class="double-mark" title="Два урока подряд" aria-label="Два урока подряд"><b>2</b> урока<span class="double-detail"> подряд</span></span>' : ''}</div>
       </div>`).join('')}</div>
       <div class="day-end"><span class="end-dot"></span> ${periods[last[2]][1]} <span>· Конец занятий</span></div>
     </article>`;
