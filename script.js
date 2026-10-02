@@ -54,14 +54,27 @@ const shortNames = {
 };
 const root = document.getElementById('schedule');
 let selected = 'all';
-let displayedDay;
-function astanaDay() {
-  const name = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Almaty', weekday: 'short' }).format(new Date());
-  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(name);
+let displayedState;
+const astanaClock = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'Asia/Almaty', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+});
+function toMinutes(time) {
+  const [hour, minute] = time.split(':').map(Number);
+  return hour * 60 + minute;
+}
+function astanaState(date = new Date()) {
+  const parts = Object.fromEntries(astanaClock.formatToParts(date).map(part => [part.type, part.value]));
+  const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(parts.weekday);
+  const minutes = Number(parts.hour) * 60 + Number(parts.minute);
+  // Check individual periods so breaks within a double lesson are excluded too.
+  const period = day < 0 ? null : Object.keys(periods).map(Number).find(number =>
+    minutes >= toMinutes(periods[number][0]) && minutes < toMinutes(periods[number][1])
+  ) ?? null;
+  return { day, period, key: `${day}:${period}` };
 }
 function render() {
-  const today = astanaDay();
-  displayedDay = today;
+  const { day: today, period: currentPeriod, key } = astanaState();
+  displayedState = key;
   document.querySelectorAll('.day-button').forEach(button => {
     button.classList.toggle('is-today', button.dataset.day !== 'all' && Number(button.dataset.day) === today);
   });
@@ -72,12 +85,16 @@ function render() {
     const last = day.lessons.at(-1);
     return `<article class="day-card ${day.color}${today === index ? ' is-today' : ''}" style="--lesson-count:${day.lessons.length}" ${selected !== 'all' && Number(selected) !== index ? 'hidden' : ''} aria-labelledby="day-${index}">
       <div class="day-heading"><div class="day-index">0${index + 1}</div><div class="day-heading-text"><h3 id="day-${index}">${day.name}</h3><span>${count} уроков · до ${periods[last[2]][1]}</span></div>${today === index ? '<span class="today">Сегодня</span>' : ''}</div>
-      <div class="lessons">${day.lessons.map(([name, first, end, room, icon]) => `<div class="lesson ${end > first ? 'double' : ''}">
+      <div class="lessons">${day.lessons.map(([name, first, end, room, icon]) => {
+        const current = today === index && currentPeriod !== null && currentPeriod >= first && currentPeriod <= end;
+        return `<div class="lesson ${end > first ? 'double' : ''}${current ? ' is-current' : ''}"${current ? ' aria-current="true"' : ''}>
+        ${current ? '<span class="sr-only">Сейчас идёт урок</span>' : ''}
         <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${first} урок` : `${first}–${end} уроки`}</span></div>
         <div class="lesson-time">${periods[first][0]} <span>—</span> ${periods[end][1]}</div>
         <h4 aria-label="${name}" title="${name}"><span class="subject-full">${name}</span><span class="subject-short" aria-hidden="true">${shortNames[name] || name}</span></h4>
         <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room === 'Спортзал' ? room : `Каб. ${room}`}${end > first ? '<span class="double-mark" title="Два урока подряд" aria-label="Два урока подряд"><b>2</b> урока<span class="double-detail"> подряд</span></span>' : ''}</div>
-      </div>`).join('')}</div>
+      </div>`;
+      }).join('')}</div>
       <div class="day-end"><span class="end-dot"></span> ${periods[last[2]][1]} <span>· Конец занятий</span></div>
     </article>`;
   }).join('');
@@ -94,10 +111,10 @@ document.querySelectorAll('.day-button').forEach(button => {
   });
 });
 render();
-function refreshDay() {
-  if (astanaDay() !== displayedDay) render();
+function refreshCurrentLesson() {
+  if (astanaState().key !== displayedState) render();
 }
-setInterval(refreshDay, 60000);
+setInterval(refreshCurrentLesson, 1000);
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) refreshDay();
+  if (!document.hidden) refreshCurrentLesson();
 });
