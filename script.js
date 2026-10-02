@@ -38,6 +38,18 @@ const days = [
   ]}
 ];
 const symbols = { language: 'Aa', art: '✎', code: '</>', science: '⌘', music: '♫', book: '▤', sport: '↗', history: '◷', math: '∑' };
+const shortNames = {
+  'Иностранный язык': 'Иностр. язык',
+  'Художественный труд': 'Худ. труд',
+  'Информатика': 'Информ.',
+  'Естествознание': 'Естеств.',
+  'Казахский язык и литература': 'Каз. язык и лит.',
+  'Русская литература': 'Рус. лит.',
+  'Физкультура': 'Физ-ра',
+  'Всемирная история': 'Всемир. история',
+  'Математика': 'Матем.',
+  'История Казахстана': 'История РК'
+};
 const root = document.getElementById('schedule');
 let selected = 'all';
 function astanaDay() {
@@ -56,7 +68,7 @@ function render() {
       <div class="lessons">${day.lessons.map(([name, first, end, room, icon]) => `<div class="lesson ${end > first ? 'double' : ''}">
         <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${first} урок` : `${first}–${end} уроки`}</span></div>
         <div class="lesson-time">${periods[first][0]} <span>—</span> ${periods[end][1]}</div>
-        <h4>${name}</h4>
+        <h4 aria-label="${name}" title="${name}"><span class="subject-full">${name}</span><span class="subject-short" aria-hidden="true">${shortNames[name] || name}</span></h4>
         <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room === 'Спортзал' ? room : `Каб. ${room}`}${end > first ? '<span class="double-mark" title="Два урока подряд" aria-label="Два урока подряд"><b>2</b> урока<span class="double-detail"> подряд</span></span>' : ''}</div>
       </div>`).join('')}</div>
       <div class="day-end"><span class="end-dot"></span> ${periods[last[2]][1]} <span>· Конец занятий</span></div>
