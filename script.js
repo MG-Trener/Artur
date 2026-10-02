@@ -50,7 +50,7 @@ function render() {
   root.innerHTML = days.map((day, index) => {
     const count = day.lessons.reduce((total, lesson) => total + lesson[2] - lesson[1] + 1, 0);
     const last = day.lessons.at(-1);
-    return `<article class="day-card ${day.color}" ${selected !== 'all' && Number(selected) !== index ? 'hidden' : ''} aria-labelledby="day-${index}">
+    return `<article class="day-card ${day.color}" style="--lesson-count:${day.lessons.length}" ${selected !== 'all' && Number(selected) !== index ? 'hidden' : ''} aria-labelledby="day-${index}">
       <div class="day-heading"><div class="day-index">0${index + 1}</div><div class="day-heading-text"><h3 id="day-${index}">${day.name}</h3><span>${count} уроков · до ${periods[last[2]][1]}</span></div>${today === index ? '<span class="today">Сегодня</span>' : ''}</div>
       <div class="lessons">${day.lessons.map(([name, first, end, room, icon]) => `<div class="lesson ${end > first ? 'double' : ''}">
         <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${first} урок` : `${first}–${end} уроки`}</span></div>
