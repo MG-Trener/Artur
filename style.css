@@ -39,4 +39,21 @@
   .single-day .day-heading{padding:5px 8px}.single-day .lesson{min-height:85px;padding:5px}.single-day h4{font-size:11px;white-space:normal;margin:4px 0}.single-day .lesson-time{font-size:10px}.single-day .room{font-size:8px;flex-wrap:wrap}.single-day .double-mark{font-size:7px}.single-day .lessons{padding:3px;gap:3px}.orbit-scene{height:75px;width:175px}.orbit-core{font-size:28px}.orbit-symbol{font-size:12px}.symbol-two{font-size:11px}.orbit-ring{inset:8px 18px}.ring-two{inset:4px 35px}.symbol-one{top:15px}.symbol-two{top:8px}.symbol-three{bottom:8px}.symbol-four{bottom:4px}
 }
 .day-card.is-today{border-color:var(--accent);box-shadow:0 0 0 1px rgba(var(--rgb),.2),0 0 22px rgba(var(--rgb),.16);background:linear-gradient(180deg,rgba(var(--rgb),.13),#10141e 120px)}.day-card.is-today .day-heading{background:rgba(var(--rgb),.08)}.day-card.is-today:before{left:8%;right:8%;width:auto;box-shadow:0 0 14px var(--accent)}.day-button.is-today:not(.active){color:var(--mint);border-color:#a2ffc64a;background:#a2ffc60a}.day-button.is-today:after{content:"";display:inline-block;width:4px;height:4px;margin-left:5px;vertical-align:middle;border-radius:50%;background:var(--mint);box-shadow:0 0 6px var(--mint)}
+/* Intrinsic minimum sizes keep portrait content above the footer when browser
+   controls or larger text leave less space than the timetable needs. */
+@media(orientation:portrait) and (max-width:700px){
+  .page{height:auto;min-height:100svh;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .schedule-section,.week-grid,.day-card,.lessons{min-height:min-content}
+  .day-animation{flex:1 1 0px}
+  .schedule-caption,footer{position:relative;flex-shrink:0}
+  footer{margin-top:2px}
+}
+@media(orientation:portrait) and (max-width:700px) and (max-height:740px){
+  .topbar{display:none}.eyebrow{display:none}.page,.schedule-section{gap:5px}
+  .intro{padding-top:5px}h1{font-size:20px}.day-button{padding:4px 9px}
+  .day-heading{padding:4px 7px}.day-heading h3{font-size:10px}
+  .lessons{gap:2px;padding:0 4px 4px}.lesson{padding:3px}
+  .lesson-time,.room{font-size:7px}h4{font-size:9px;margin:3px 0}
+  .schedule-caption{display:none}footer{padding:5px 0;row-gap:3px}
+}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
