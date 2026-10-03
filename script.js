@@ -1,57 +1,80 @@
 const periods = {
-  9: ['14:00', '14:40'], 10: ['14:45', '15:25'],
-  11: ['15:40', '16:20'], 12: ['16:25', '17:05'],
-  13: ['17:20', '18:00'], 14: ['18:05', '18:45']
+  1: ['14:00', '14:40'], 2: ['14:45', '15:25'],
+  3: ['15:35', '16:15'], 4: ['16:25', '17:05'],
+  5: ['17:10', '17:50'], 6: ['17:55', '18:35'],
+  11: ['13:20', '14:05'], 12: ['14:10', '14:55'],
+  13: ['15:00', '15:45'], 14: ['16:00', '16:45'],
+  15: ['17:00', '17:45'], 16: ['17:50', '18:35']
 };
-// Номера уроков и объединённые ячейки из расписания от 05.09.2026.
+
+function displayPeriodNumber(number) {
+  return number >= 11 ? number - 10 : number;
+}
+
+// Расписание 3 «Ж» класса, 1 полугодие.
+// В понедельник звонки отличаются от расписания вторника–пятницы.
+// По понедельникам в 13:55 — гимн.
 const days = [
-  { name: 'Понедельник', color: 'mint', lessons: [
-    ['Иностранный язык', 9, 9, '408 / 409', 'language'],
-    ['Художественный труд', 10, 10, '205 / 202', 'art'],
-    ['Художественный труд', 11, 11, '208 / 202', 'art'],
-    ['Информатика', 12, 12, '209А / 402', 'code'],
-    ['Естествознание', 13, 14, '405', 'science']
+  { name: 'Понедельник', color: 'mint', notice: '13:55 — гимн', lessons: [
+    ['Классный час', 1, 1, '', 'book'],
+    ['Математика', 2, 2, '', 'math'],
+    ['Русский язык', 3, 3, '', 'language'],
+    ['Английский язык', 4, 4, '', 'language'],
+    ['Казахский язык', 5, 5, '', 'language'],
+    ['Литературное чтение', 6, 6, '', 'book']
   ]},
   { name: 'Вторник', color: 'purple', lessons: [
-    ['Музыка', 9, 9, '404', 'music'],
-    ['Казахский язык и литература', 10, 10, '200 / 300', 'language'],
-    ['Русский язык', 11, 11, '308', 'language'],
-    ['Русская литература', 12, 12, '308', 'book'],
-    ['Иностранный язык', 13, 13, '408 / 409', 'language'],
-    ['Физкультура', 14, 14, 'Спортзал', 'sport']
+    ['Казахский язык', 11, 11, '', 'language'],
+    ['Цифровая грамотность', 12, 12, '', 'code'],
+    ['Русский язык', 13, 13, '', 'language'],
+    ['Математика', 14, 14, '', 'math'],
+    ['Естествознание', 15, 15, '', 'science'],
+    ['Английский язык', 16, 16, '', 'language']
   ]},
   { name: 'Среда', color: 'blue', lessons: [
-    ['Русский язык', 9, 10, '309', 'language'],
-    ['Всемирная история', 11, 11, '305', 'history'],
-    ['Математика', 12, 13, '209', 'math']
+    ['Математика', 11, 11, '', 'math'],
+    ['Русский язык', 12, 12, '', 'language'],
+    ['Музыка', 13, 13, '', 'music'],
+    ['Литературное чтение', 14, 14, '', 'book'],
+    ['Физкультура', 15, 15, '', 'sport']
   ]},
   { name: 'Четверг', color: 'pink', lessons: [
-    ['Математика', 9, 9, '208', 'math'],
-    ['Русский язык', 10, 10, '304', 'language'],
-    ['История Казахстана', 11, 12, '304', 'history'],
-    ['Казахский язык и литература', 13, 14, '201 / 301', 'language']
+    ['Русский язык', 11, 11, '', 'language'],
+    ['Математика', 12, 12, '', 'math'],
+    ['Познание мира', 13, 13, '', 'science'],
+    ['ИЗО', 14, 14, '', 'art'],
+    ['Физкультура', 15, 15, '', 'sport'],
+    ['Казахский язык', 16, 16, '', 'language']
   ]},
   { name: 'Пятница', color: 'amber', lessons: [
-    ['Математика', 9, 10, '208', 'math'],
-    ['Физкультура', 11, 12, 'Спортзал', 'sport'],
-    ['Казахский язык и литература', 13, 13, '200 / 300', 'language'],
-    ['Иностранный язык', 14, 14, '408 / 409', 'language']
+    ['Физкультура', 11, 11, '', 'sport'],
+    ['Математика', 12, 12, '', 'math'],
+    ['Литературное чтение', 13, 13, '', 'book'],
+    ['Трудовое обучение', 14, 14, '', 'art']
   ]}
 ];
-const symbols = { language: 'Aa', art: '✎', code: '</>', science: '⌘', music: '♫', book: '▤', sport: '↗', history: '◷', math: '∑' };
-const shortNames = {
-  'Иностранный язык': 'Иностр. язык',
-  'Художественный труд': 'Худ. труд',
-  'Информатика': 'Информ.',
-  'Естествознание': 'Естеств.',
-  'Казахский язык и литература': 'Каз. язык и лит.',
-  'Русская литература': 'Рус. лит.',
-  'Русский язык': 'Рус. язык',
-  'Физкультура': 'Физ-ра',
-  'Всемирная история': 'Всемир. история',
-  'Математика': 'Матем.',
-  'История Казахстана': 'История РК'
+
+const symbols = {
+  language: 'Aa', art: '✎', code: '</>', science: '⌘',
+  music: '♫', book: '▤', sport: '↗', history: '◷', math: '∑'
 };
+
+const shortNames = {
+  'Классный час': 'Кл. час',
+  'Математика': 'Матем.',
+  'Русский язык': 'Рус. язык',
+  'Английский язык': 'Англ. язык',
+  'Казахский язык': 'Каз. язык',
+  'Литературное чтение': 'Лит. чтение',
+  'Цифровая грамотность': 'Цифр. грамот.',
+  'Естествознание': 'Естеств.',
+  'Музыка': 'Музыка',
+  'Познание мира': 'Позн. мира',
+  'ИЗО': 'ИЗО',
+  'Физкультура': 'Физ-ра',
+  'Трудовое обучение': 'Труд. обуч.'
+};
+
 const root = document.getElementById('schedule');
 let selected = 'all';
 let displayedState;
@@ -66,13 +89,16 @@ function astanaState(date = new Date()) {
   const parts = Object.fromEntries(astanaClock.formatToParts(date).map(part => [part.type, part.value]));
   const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(parts.weekday);
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
-  // Check individual periods so breaks within a double lesson are excluded too.
-  const period = day < 0 ? null : Object.keys(periods).map(Number).find(number =>
+  const lessonNumbers = day < 0 ? [] : days[day].lessons.flatMap(([, first, last]) =>
+    Array.from({ length: last - first + 1 }, (_, index) => first + index)
+  );
+  const period = day < 0 ? null : lessonNumbers.find(number =>
     minutes >= toMinutes(periods[number][0]) && minutes < toMinutes(periods[number][1])
   ) ?? null;
   const seconds = minutes * 60 + Number(parts.second);
-  return { day, period, seconds, key: `${day}:${period}` };
+  return { day, period, seconds, key: day + ':' + period };
 }
+
 function currentBreak(state) {
   if (state.day < 0 || state.period !== null) return null;
   const slots = days[state.day].lessons.flatMap(([name, first, last, room]) =>
@@ -123,7 +149,7 @@ function updateBreak(state) {
   if (message.textContent !== text) message.textContent = text;
   document.getElementById('break-title').textContent = urgent ? 'Скоро звонок!' : 'Перемена!';
   document.getElementById('break-next').textContent = `Дальше: ${pause.next.name}`;
-  document.getElementById('break-room').textContent = `${periods[pause.next.number][0]} · ${pause.next.room === 'Спортзал' ? pause.next.room : `Каб. ${pause.next.room}`}`;
+  document.getElementById('break-room').textContent = 'Начало: ' + periods[pause.next.number][0];
   document.getElementById('break-progress-fill').style.width = `${100 * (1 - pause.remaining / pause.duration)}%`;
   if (opening || urgent) updateFloatingBounds();
 }
@@ -146,15 +172,15 @@ function render() {
     const count = day.lessons.reduce((total, lesson) => total + lesson[2] - lesson[1] + 1, 0);
     const last = day.lessons.at(-1);
     return `<article class="day-card ${day.color}${today === index ? ' is-today' : ''}" style="--lesson-count:${day.lessons.length}" ${selected !== 'all' && Number(selected) !== index ? 'hidden' : ''} aria-labelledby="day-${index}">
-      <div class="day-heading"><div class="day-index">0${index + 1}</div><div class="day-heading-text"><h3 id="day-${index}">${day.name}</h3><span>${count} уроков · до ${periods[last[2]][1]}</span></div>${today === index ? '<span class="today">Сегодня</span>' : ''}</div>
+      <div class="day-heading"><div class="day-index">0${index + 1}</div><div class="day-heading-text"><h3 id="day-${index}">${day.name}</h3><span>${count} уроков · до ${periods[last[2]][1]}${day.notice ? ` · ${day.notice}` : ''}</span></div>${today === index ? '<span class="today">Сегодня</span>' : ''}</div>
       <div class="lessons">${day.lessons.map(([name, first, end, room, icon]) => {
         const current = today === index && currentPeriod !== null && currentPeriod >= first && currentPeriod <= end;
         return `<div class="lesson ${end > first ? 'double' : ''}${current ? ' is-current' : ''}"${current ? ' aria-current="true"' : ''}>
         ${current ? '<span class="sr-only">Сейчас идёт урок</span>' : ''}
-        <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${first} урок` : `${first}–${end} уроки`}</span></div>
+        <div class="lesson-top"><span class="lesson-symbol" aria-hidden="true">${symbols[icon]}</span><span class="lesson-number">${first === end ? `${displayPeriodNumber(first)} урок` : `${displayPeriodNumber(first)}–${displayPeriodNumber(end)} уроки`}</span></div>
         <div class="lesson-time">${periods[first][0]} <span>—</span> ${periods[end][1]}</div>
         <h4 aria-label="${name}" title="${name}"><span class="subject-full">${name}</span><span class="subject-short" aria-hidden="true">${shortNames[name] || name}</span></h4>
-        <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room === 'Спортзал' ? room : `Каб. ${room}`}${end > first ? '<span class="double-mark" title="Два урока подряд" aria-label="Два урока подряд"><b>2</b> урока<span class="double-detail"> подряд</span></span>' : ''}</div>
+        <div class="room"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13V3h10v10M1 13h14M6 13V9h4v4M6 5h1m2 0h1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${room ? (room === 'Спортзал' ? room : `Каб. ${room}`) : 'Кабинет не указан'}${end > first ? '<span class="double-mark" title="Два урока подряд" aria-label="Два урока подряд"><b>2</b> урока<span class="double-detail"> подряд</span></span>' : ''}</div>
       </div>`;
       }).join('')}</div>
       <div class="day-end"><span class="end-dot"></span> ${periods[last[2]][1]} <span>· Конец занятий</span></div>
