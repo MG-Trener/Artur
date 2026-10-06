@@ -63,6 +63,7 @@ function toMinutes(time) {
   return hour * 60 + minute;
 }
 function astanaState(date = new Date()) {
+  if (window.schoolHolidays.current(date)) return { day: -1, period: null, seconds: 0, key: "holiday" };
   const parts = Object.fromEntries(astanaClock.formatToParts(date).map(part => [part.type, part.value]));
   const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(parts.weekday);
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
